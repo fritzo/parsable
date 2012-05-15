@@ -1,0 +1,25 @@
+
+parsable.py is a super lightweight set of decorators that lets you add
+command-line parsing to scripts with minimal effort.
+
+How To Use parsable.py:
+
+1. copy parsable.py into your project and
+
+  import parsable
+
+2. decorate functions you want parsed as follows
+
+  @parsable.command
+  def my_function (required_arg, optional_arg = 1):
+      'Help messages are not just a good idea --they are required'
+      ...
+
+3. finish the script with
+
+  if __name__ == '__parsable__': parsable.dispatch()
+    
+That's it: 3 short lines of syntax!
+
+LICENSE: dual MIT / GPL2
+
