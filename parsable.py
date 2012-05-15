@@ -22,13 +22,16 @@ def command(fun):
     args, vargs, kwds, defaults = inspect.getargspec(fun)
     if defaults is None:
         defaults = ()
-    types = ([str] * (len(args) - len(defaults)) +
-             [d.__class__ for d in defaults])
+    arg_types = ([str] * (len(args) - len(defaults)) +
+                 [d.__class__ for d in defaults])
+    kwd_types = dict(zip(args, arg_types))
 
     def parser(*args, **kwds):
-        assert not kwds, 'TODO parse keyword arguments'
-        types_etc = types + [str] * (len(args) - len(types))  # for vargs
-        fun(*tuple(t(a) for a, t in zip(args, types_etc)))
+        varg_types = arg_types + [str] * (len(args) - len(arg_types))
+        typed_args = tuple(t(a) for a, t in zip(args, varg_types))
+        typed_kwds = dict([(k, kwd_types.get(k, str)(v))
+                           for k, v in kwds.iteritems()])
+        fun(*typed_args, **typed_kwds)
 
     name = fun.__name__.replace('_', '-')
     assert fun.__doc__, 'missing docstring for %s' % name
