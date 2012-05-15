@@ -17,7 +17,7 @@ __commands = []
 
 
 def command(fun):
-    'decorator for parsable commands'
+    'Decorator for parsable commands'
 
     args, vargs, kwds, defaults = inspect.getargspec(fun)
     if defaults is None:
@@ -38,7 +38,7 @@ def command(fun):
 
 
 def at_top(extra_depth=0):
-    'returns whether calling location is top-level parsable command'
+    'Returns whether calling location is top-level parsable command'
 
     depth = len(inspect.stack())
     assert depth >= 5
@@ -46,7 +46,7 @@ def at_top(extra_depth=0):
 
 
 def dispatch(args=None):
-    'parses arguments to call a parsable command'
+    'Parses arguments to call a parsable command'
 
     if args is None:
         args = sys.argv[1:]
