@@ -11,6 +11,7 @@ http://www.opensource.org/licenses/GPL-2.0
 
 import os
 import sys
+import time
 import inspect
 
 __commands = []
@@ -19,22 +20,26 @@ __commands = []
 def command(fun):
     'Decorator for parsable commands'
 
-    args, vargs, kwds, defaults = inspect.getargspec(fun)
+    args, vargs, kwargs, defaults = inspect.getargspec(fun)
     if defaults is None:
         defaults = ()
     arg_types = ([str] * (len(args) - len(defaults)) +
                  [d.__class__ for d in defaults])
     kwd_types = dict(zip(args, arg_types))
 
-    def parser(*args, **kwds):
-        varg_types = arg_types + [str] * (len(args) - len(arg_types))
-        typed_args = tuple(t(a) for a, t in zip(args, varg_types))
-        typed_kwds = dict([(k, kwd_types.get(k, str)(v))
-                           for k, v in kwds.iteritems()])
-        fun(*typed_args, **typed_kwds)
-
     name = fun.__name__.replace('_', '-')
     assert fun.__doc__, 'missing docstring for %s' % name
+
+    def parser(*args, **kwargs):
+        varg_types = arg_types + [str] * (len(args) - len(arg_types))
+        typed_args = tuple(t(a) for a, t in zip(args, varg_types))
+        typed_kwargs = dict([(k, kwd_types.get(k, str)(v))
+                           for k, v in kwargs.iteritems()])
+        start = time.time()
+        fun(*typed_args, **typed_kwargs)
+        stop = time.time()
+        sys.stderr.write('%s took %g sec\n' % (name, stop - start))
+
     __commands.append((name, (fun, parser)))
 
     return fun
@@ -55,7 +60,8 @@ def dispatch(args=None):
         args = sys.argv[1:]
 
     if not args:
-        print 'Usage: %s COMMAND [ARGS] [KWDS]' % os.path.split(sys.argv[0])[-1]
+        script = os.path.split(sys.argv[0])[-1]
+        print 'Usage: %s COMMAND [ARGS] [KWDS]' % script
         for name, (fun, _) in  __commands:
             print '\n%s %s\n    %s' % (
                     name,
@@ -64,8 +70,8 @@ def dispatch(args=None):
                     )
         sys.exit(1)
 
-    cmd, args, kwds = args[0], args[1:], {}
+    cmd, args, kwargs = args[0], args[1:], {}
     while args and '=' in args[-1]:
         key, val = args.pop().split('=', 1)
-        kwds[key] = val
-    dict(__commands)[cmd.replace('_', '-')][1](*args, **kwds)
+        kwargs[key] = val
+    dict(__commands)[cmd.replace('_', '-')][1](*args, **kwargs)
