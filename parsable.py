@@ -58,6 +58,9 @@ def dispatch(args=None):
 
     if args is None:
         args = sys.argv[1:]
+        sys.stderr.write('# python %s\n' % ' '.join(sys.argv))
+    else:
+        sys.stderr.write('# (in %s) %s\n' % (sys.argv[0], ' '.join(args)))
 
     if not args:
         script = os.path.split(sys.argv[0])[-1]
