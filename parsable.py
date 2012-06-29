@@ -14,7 +14,19 @@ import sys
 import time
 import inspect
 
-__commands = []
+_commands = []
+
+_bool_names = {'0': False, 'false': False, '1': True, 'true': True}
+
+_parsers = {
+    bool: (lambda b: _bool_names[b.tolower()]),
+    None.__class__: str,
+    }
+
+
+def _parser(d):
+    class_ = d.__class__
+    return _parsers.get(class_, class_)
 
 
 def command(fun):
@@ -23,8 +35,7 @@ def command(fun):
     args, vargs, kwargs, defaults = inspect.getargspec(fun)
     if defaults is None:
         defaults = ()
-    arg_types = ([str] * (len(args) - len(defaults)) +
-                 [d.__class__ for d in defaults])
+    arg_types = [str] * (len(args) - len(defaults)) + map(_parser, defaults)
     kwd_types = dict(zip(args, arg_types))
 
     name = fun.__name__.replace('_', '-')
@@ -40,7 +51,7 @@ def command(fun):
         stop = time.time()
         sys.stderr.write('%s took %g sec\n' % (name, stop - start))
 
-    __commands.append((name, (fun, parser)))
+    _commands.append((name, (fun, parser)))
 
     return fun
 
@@ -64,8 +75,8 @@ def dispatch(args=None):
 
     if not args:
         script = os.path.split(sys.argv[0])[-1]
-        print 'Usage: %s COMMAND [ARGS] [KWDS]' % script
-        for name, (fun, _) in  __commands:
+        print 'Usage: %s COMMAND [ARG ARG ... KEY=VAL KEY=VAL ...]' % script
+        for name, (fun, _) in  _commands:
             print '\n%s %s\n    %s' % (
                     name,
                     inspect.formatargspec(*inspect.getargspec(fun)),
@@ -77,4 +88,4 @@ def dispatch(args=None):
     while args and '=' in args[-1]:
         key, val = args.pop().split('=', 1)
         kwargs[key] = val
-    dict(__commands)[cmd.replace('_', '-')][1](*args, **kwargs)
+    dict(_commands)[cmd.replace('_', '-')][1](*args, **kwargs)
