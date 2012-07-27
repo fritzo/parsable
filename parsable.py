@@ -19,7 +19,7 @@ _commands = []
 _bool_names = {'0': False, 'false': False, '1': True, 'true': True}
 
 _parsers = {
-    bool: (lambda b: _bool_names[b.tolower()]),
+    bool: (lambda b: _bool_names[b.lower()]),
     None.__class__: str,
     }
 
