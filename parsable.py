@@ -85,7 +85,12 @@ def dispatch(args=None):
         sys.exit(1)
 
     cmd, args, kwargs = args[0], args[1:], {}
+    try:
+        parser = dict(_commands)[cmd.replace('_', '-')][1]
+    except KeyError:
+        raise ValueError("unknown command '{0}', try one of:\n  {1}".format(
+            cmd, ', '.join(name for name, _ in _commands)))
     while args and '=' in args[-1]:
         key, val = args.pop().split('=', 1)
         kwargs[key] = val
-    dict(_commands)[cmd.replace('_', '-')][1](*args, **kwargs)
+    parser(*args, **kwargs)
