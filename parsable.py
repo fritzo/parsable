@@ -14,7 +14,7 @@ import sys
 import time
 import inspect
 
-_commands = []
+__commands = []
 
 _bool_names = {'0': False, 'false': False, '1': True, 'true': True}
 
@@ -30,7 +30,7 @@ def _parser(d):
 
 
 def command(fun):
-    'Decorator for parsable commands'
+    'Decorator for parsable _commands'
 
     args, vargs, kwargs, defaults = inspect.getargspec(fun)
     if defaults is None:
@@ -51,7 +51,7 @@ def command(fun):
         stop = time.time()
         sys.stderr.write('%s took %g sec\n' % (name, stop - start))
 
-    _commands.append((name, (fun, parser)))
+    __commands.append((name, (fun, parser)))
 
     return fun
 
@@ -76,7 +76,7 @@ def dispatch(args=None):
     if not args:
         script = os.path.split(sys.argv[0])[-1]
         print 'Usage: %s COMMAND [ARG ARG ... KEY=VAL KEY=VAL ...]' % script
-        for name, (fun, _) in  _commands:
+        for name, (fun, _) in  __commands:
             print '\n%s %s\n    %s' % (
                     name,
                     inspect.formatargspec(*inspect.getargspec(fun)),
@@ -86,11 +86,27 @@ def dispatch(args=None):
 
     cmd, args, kwargs = args[0], args[1:], {}
     try:
-        parser = dict(_commands)[cmd.replace('_', '-')][1]
+        parser = dict(__commands)[cmd.replace('_', '-')][1]
     except KeyError:
         raise ValueError("unknown command '{0}', try one of:\n  {1}".format(
-            cmd, ', '.join(name for name, _ in _commands)))
+            cmd, ', '.join(name for name, _ in __commands)))
     while args and '=' in args[-1]:
         key, val = args.pop().split('=', 1)
         kwargs[key] = val
     parser(*args, **kwargs)
+
+
+class Parsable:
+    'Collects parsable commands locally for possible dispatch'
+
+    def __init__(self):
+        self._commands = []
+
+    def command(self, fun):
+        self._commands.append(fun)
+        return fun
+
+    def dispatch(self, args=None):
+        for fun in self._commands:
+            command(fun)
+        dispatch(args)

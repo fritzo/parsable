@@ -1,6 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
-import parsable
+from parsable import Parsable
+
+parsable = Parsable()
 
 
 @parsable.command
