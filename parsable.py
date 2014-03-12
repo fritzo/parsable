@@ -14,7 +14,7 @@ import sys
 import time
 import inspect
 
-__commands = []
+_commands = []
 
 _bool_names = {'0': False, 'false': False, '1': True, 'true': True}
 
@@ -44,14 +44,16 @@ def command(fun):
     def parser(*args, **kwargs):
         varg_types = arg_types + [str] * (len(args) - len(arg_types))
         typed_args = tuple(t(a) for a, t in zip(args, varg_types))
-        typed_kwargs = dict([(k, kwd_types.get(k, str)(v))
-                           for k, v in kwargs.iteritems()])
+        typed_kwargs = {
+            k: kwd_types.get(k, str)(v)
+            for k, v in kwargs.iteritems()
+        }
         start = time.time()
         fun(*typed_args, **typed_kwargs)
         stop = time.time()
         sys.stderr.write('%s took %g sec\n' % (name, stop - start))
 
-    __commands.append((name, (fun, parser)))
+    _commands.append((name, (fun, parser)))
 
     return fun
 
@@ -76,20 +78,20 @@ def dispatch(args=None):
     if not args:
         script = os.path.split(sys.argv[0])[-1]
         print 'Usage: %s COMMAND [ARG ARG ... KEY=VAL KEY=VAL ...]' % script
-        for name, (fun, _) in  __commands:
+        for name, (fun, _) in _commands:
             print '\n%s %s\n    %s' % (
-                    name,
-                    inspect.formatargspec(*inspect.getargspec(fun)),
-                    fun.__doc__.strip(),
-                    )
+                name,
+                inspect.formatargspec(*inspect.getargspec(fun)),
+                fun.__doc__.strip(),
+            )
         sys.exit(1)
 
     cmd, args, kwargs = args[0], args[1:], {}
     try:
-        parser = dict(__commands)[cmd.replace('_', '-')][1]
+        parser = dict(_commands)[cmd.replace('_', '-')][1]
     except KeyError:
         raise ValueError("unknown command '{0}', try one of:\n  {1}".format(
-            cmd, ', '.join(name for name, _ in __commands)))
+            cmd, ', '.join(name for name, _ in _commands)))
     while args and '=' in args[-1]:
         key, val = args.pop().split('=', 1)
         kwargs[key] = val
@@ -97,7 +99,7 @@ def dispatch(args=None):
 
 
 class Parsable:
-    'Collects parsable commands locally for possible dispatch'
+    'Collects parsable commands locally for optional dispatch'
 
     def __init__(self):
         self._commands = []
