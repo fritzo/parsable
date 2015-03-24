@@ -2,8 +2,11 @@ from setuptools import setup, find_packages
 
 __version__ = '0.1.1'
 
-with open('README') as f:
-    long_description = f.read()
+try:
+    with open('README.rst') as f:
+        long_description = f.read()
+except IOError:
+    long_description = 'Lightweight argument parsing using a decorator'
 
 config = {
     'name': 'parsable',
