@@ -1,0 +1,17 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "pypy"
+before_install:
+  - export PIP_DOWNLOAD_CACHE=$HOME/.pip-cache
+  - pip install -r requirements.txt
+install:
+  - python setup.py install
+script:
+  - pyflakes *.py
+  - pep8 *.py
+  - nosetests -v

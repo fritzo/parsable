@@ -1,9 +1,8 @@
-
 '''
-parsable.py - A lightweight decorator-based command line parser
-http://github.com/fritzo/parsable.py
+parsable - Lightweight argument parsing using a decorator.
+http://github.com/fritzo/parsable
 
-Copyright (c) 2011, Fritz Obermeyer
+Copyright (c) 2011-2015, Fritz Obermeyer
 Dual licensed under the MIT or GPL Version 2 licenses.
 http://www.opensource.org/licenses/MIT
 http://www.opensource.org/licenses/GPL-2.0
