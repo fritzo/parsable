@@ -76,13 +76,14 @@ def dispatch(args=None):
 
     if not args:
         script = os.path.split(sys.argv[0])[-1]
-        print 'Usage: %s COMMAND [ARG ARG ... KEY=VAL KEY=VAL ...]' % script
+        print('Usage: {0} COMMAND [ARG ARG ... KEY=VAL KEY=VAL ...]'.format(
+            script))
         for name, (fun, _) in _commands:
-            print '\n%s %s\n    %s' % (
+            print('\n{0} {1}\n    {2}'.format(
                 name,
                 inspect.formatargspec(*inspect.getargspec(fun)),
                 fun.__doc__.strip(),
-            )
+            ))
         sys.exit(1)
 
     cmd, args, kwargs = args[0], args[1:], {}

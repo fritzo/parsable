@@ -10,7 +10,7 @@ def run(*args, **kwargs):
         if len(val.split()) > 1:
             val = "'{0}'".format(val)
         command.append("{0}={1}".format(key, val))
-    print ' '.join(command)
+    print(' '.join(command))
     subprocess.check_call(command)
 
 
