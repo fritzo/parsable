@@ -34,7 +34,7 @@ You can also run the setup.py from the source if you don't have ``pip``.
 
 .. code-block:: bash
 
-    git clone https://github.com/ymattw/parsable.git
+    git clone https://github.com/fritzo/parsable.git
     cd parsable
     ./setup.py install
 
@@ -43,7 +43,7 @@ Download directly
 
 Just save `parsable.py`_ and add to your project.
 
-.. _`parsable.py`: https://raw.github.com/ymattw/parsable/master/parsable.py
+.. _`parsable.py`: https://raw.github.com/fritzo/parsable/master/parsable.py
 
 Usage
 -----
@@ -65,7 +65,7 @@ and a ``parsable.dispatch`` function.
         def my_function(required_arg, optional_bool=True, optional_int=1):
             '''Help messages are not just a good idea, they are required'''
             # parsable automatically converts types based on default arguments:
-            assert isinstance(required_arg, string)
+            assert isinstance(required_arg, str)
             assert isinstance(optional_string, bool)
             assert isinstance(optional_int, int)
             # ...

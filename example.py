@@ -2,28 +2,32 @@
 
 from parsable import Parsable
 
+# This optional alternative to 'import parsable' creates a local parser
+# that wont leak into files that import this file.
 parsable = Parsable()
 
 
 @parsable.command
 def example_command(required_arg, optional_int=1, optional_string='asdf'):
-    'an example command that prints its arguments'
-    print required_arg
-    print optional_int
-    print optional_string
+    'An example command that prints its arguments'
+    assert isinstance(required_arg, str)
+    assert isinstance(optional_int, int)
+    assert isinstance(optional_string, str)
+    print required_arg, optional_int, optional_string
 
 
 @parsable.command
 def another_command():
-    'no arguments on this one'
+    'No arguments on this one'
 
 
 @parsable.command
 def print_all_strings(*args):
-    'example of variable number of arguments'
+    'Example of variable number of arguments'
     print 'len(args) = %i' % len(args)
     print 'args:'
     for arg in args:
+        assert isinstance(arg, str)
         print '  %s' % arg
 
 
@@ -32,14 +36,14 @@ global_value = True
 
 @parsable.command
 def __set_value_to_false():
-    'example of command-as-option'
+    'Example of command-as-option'
     global global_value
     global_value = False
 
 
 @parsable.command
 def twice(*args):
-    'run a command twice'
+    'Run a command twice'
 
     print 'first time:'
     parsable.dispatch(args)
