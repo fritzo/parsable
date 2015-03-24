@@ -5,7 +5,7 @@ def run(*args, **kwargs):
     command = ['python', 'example.py']
     for arg in args:
         command.append(str(arg))
-    for key, val in kwargs.iteritems():
+    for key, val in kwargs.items():
         val = str(val)
         if len(val.split()) > 1:
             val = "'{0}'".format(val)

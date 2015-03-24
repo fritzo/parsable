@@ -45,7 +45,7 @@ def command(fun):
         typed_args = tuple(t(a) for a, t in zip(args, varg_types))
         typed_kwargs = {
             k: kwd_types.get(k, str)(v)
-            for k, v in kwargs.iteritems()
+            for k, v in kwargs.items()
         }
         start = time.time()
         fun(*typed_args, **typed_kwargs)
