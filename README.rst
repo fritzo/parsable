@@ -53,45 +53,45 @@ and a ``parsable.dispatch`` function.
 
 1.  Import parsable
 
-    ... code-block:: python
+... code-block:: python
 
-        import parsable
+    import parsable
 
-1.  Decorate functions you want parsed
+2.  Decorate functions you want parsed
 
-    ... code-block:: python  
+... code-block:: python  
 
-        @parsable.command
-        def my_function(required_arg, optional_bool=True, optional_int=1):
-            '''Help messages are not just a good idea, they are required'''
-            # parsable automatically converts types based on default arguments:
-            assert isinstance(required_arg, str)
-            assert isinstance(optional_string, bool)
-            assert isinstance(optional_int, int)
-            # ...
+    @parsable.command
+    def my_function(required_arg, optional_bool=True, optional_int=1):
+        '''Help messages are not just a good idea, they are required'''
+        # parsable automatically converts types based on default arguments:
+        assert isinstance(required_arg, str)
+        assert isinstance(optional_string, bool)
+        assert isinstance(optional_int, int)
+        # ...
 
-        @parsable.command
-        def do_stuff_with_files(*filenames, inplace=True):
-            '''This does something to each file'''
-            # ...
+    @parsable.command
+    def do_stuff_with_files(*filenames, inplace=True):
+        '''This does something to each file'''
+        # ...
 
 3.  Dispatch at the end of the script
 
-    ... code-block:: python  
+... code-block:: python  
 
-        if __name__ == '__main__':
-            parsable.dispatch()
+    if __name__ == '__main__':
+        parsable.dispatch()
 
 4.  Use your new script
 
-    ... code-block:: bash
+... code-block:: bash
 
-        $ python my_script.py my_function demo optional_int=5
-        ...
+    $ python my_script.py my_function demo optional_int=5
+    ...
 
-        # parsable replaces - with _ to make functions easier to read
-        $ python my_script.py do-stuff-with-files *.py in-place=false
-        ...
+    # parsable replaces - with _ to make functions easier to read
+    $ python my_script.py do-stuff-with-files *.py in-place=false
+    ...
 
 That's it: only three little pieces of syntax!
 
