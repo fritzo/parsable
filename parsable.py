@@ -34,7 +34,9 @@ def command(fun):
     args, vargs, kwargs, defaults = inspect.getargspec(fun)
     if defaults is None:
         defaults = ()
-    arg_types = [str] * (len(args) - len(defaults)) + map(_parser, defaults)
+    arg_types = (
+        [str] * (len(args) - len(defaults)) +
+        list(map(_parser, defaults)))
     kwd_types = dict(zip(args, arg_types))
 
     name = fun.__name__.replace('_', '-')
@@ -43,10 +45,10 @@ def command(fun):
     def parser(*args, **kwargs):
         varg_types = arg_types + [str] * (len(args) - len(arg_types))
         typed_args = tuple(t(a) for a, t in zip(args, varg_types))
-        typed_kwargs = {
-            k: kwd_types.get(k, str)(v)
+        typed_kwargs = dict([
+            (k, kwd_types.get(k, str)(v))
             for k, v in kwargs.items()
-        }
+        ])
         start = time.time()
         fun(*typed_args, **typed_kwargs)
         stop = time.time()
