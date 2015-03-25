@@ -42,6 +42,9 @@ and a ``parsable.dispatch`` function.
 
 2.  Decorate functions you want parsed.
     Parsable inspects the function to decide how to parse arguments.
+    Arguments without default values are parsed as strings.
+    Default arguments of any type ``T`` can be parsed as long
+    as ``T(some_string)`` can do the parsing.
 
     .. code-block:: python  
 
