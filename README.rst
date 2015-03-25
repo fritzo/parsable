@@ -15,49 +15,33 @@ Parsable was written to be simpler than argparse, optparse, and argh.
 Installation
 ------------
 
-Install with pip
-~~~~~~~~~~~~~~~~
-
-Parsable is already listed on `PyPI`_, you can install with ``pip`` if you have
-the tool.
+Install from `PyPI`_ with ``pip``
 
 .. _PyPI: http://pypi.python.org/pypi/parsable
 
 .. code-block:: bash
 
-    pip install --upgrade parsable
+    pip install parsable
 
-Install with setup.py
-~~~~~~~~~~~~~~~~~~~~~
 
-You can also run the setup.py from the source if you don't have ``pip``.
-
-.. code-block:: bash
-
-    git clone https://github.com/fritzo/parsable.git
-    cd parsable
-    ./setup.py install
-
-Download directly
-~~~~~~~~~~~~~~~~~
-
-Just save `parsable.py`_ and add to your project.
+Or just download `parsable.py`_ and add to your project.
 
 .. _`parsable.py`: https://raw.github.com/fritzo/parsable/master/parsable.py
 
 Usage
 -----
 
-Parsable uses just tiny pieces of syntax: a ``@parsable.command`` decorator,
+Parsable uses just two pieces of syntax: a ``@parsable.command`` decorator,
 and a ``parsable.dispatch`` function.
 
-1.  Import parsable
+1.  Import parsable.
 
     .. code-block:: python
 
         import parsable
 
-2.  Decorate functions you want parsed
+2.  Decorate functions you want parsed.
+    Parsable inspects the function to decide how to parse arguments.
 
     .. code-block:: python  
 
@@ -75,7 +59,7 @@ and a ``parsable.dispatch`` function.
             '''This does something to each file'''
             # ...
 
-3.  Dispatch at the end of the script
+3.  Dispatch at the end of the script.
 
     .. code-block:: python  
 
@@ -92,8 +76,6 @@ and a ``parsable.dispatch`` function.
         # parsable replaces - with _ to make functions easier to read
         $ python my_script.py do-stuff-with-files *.py in-place=false
         ...
-
-That's it: only three little pieces of syntax!
 
 LICENSE
 -------
