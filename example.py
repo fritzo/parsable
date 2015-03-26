@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from parsable import Parsable
+import parsable
 
-# This optional alternative to 'import parsable' creates a local parser
-# that wont leak into files that import this file.
-parsable = Parsable()
+# This optional line creates a local parser
+# that won't leak into modules that import this module.
+parsable = parsable.Parsable()
 
 
 @parsable.command
