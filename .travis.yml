@@ -6,6 +6,7 @@ python:
   - "3.3"
   - "3.4"
   - "pypy"
+sudo: false
 before_install:
   - export PIP_DOWNLOAD_CACHE=$HOME/.pip-cache
   - pip install pep8 pyflakes
