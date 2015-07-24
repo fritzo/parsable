@@ -145,3 +145,33 @@ class Parsable:
         for fun in self._commands:
             command(fun)
         dispatch(args)
+
+
+def find_entry_points(package_name, package_dir=None):
+    '''Finds parsable entry points during package setup.
+
+    Example in setup.py:
+        from setuptools import setup, find_packages
+        from parsable import find_entry_points
+        setup(
+            name='example_package',
+            packages=find_packages(),
+            entry_points=find_entry_points('example_package'))
+    '''
+    if package_dir is None:
+        package_dir = package_name
+    package_dir = os.path.normpath(os.path.abspath(package_dir))
+    points = []
+    for root, dirnames, filenames in os.walk(package_dir):
+        for filename in filenames:
+            if filename.endswith('.py'):
+                path = os.path.join(root, filename)
+                path = os.path.relpath(path, os.path.dirname(package_dir))
+                with open(path) as lines:
+                    if any(l.strip() == '@parsable.command' for l in lines):
+                        module = path[:-3].replace(os.sep, '.')
+                        name = module.replace('.__main__', '')
+                        points.append('{} = {}'.format(name, module))
+    assert points, 'no entry points found at {}'.format(package_dir)
+    console_scripts = map('{}:parsable.dispatch'.format, points)
+    return {'console_scripts': console_scripts}

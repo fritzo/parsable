@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 __version__ = '0.1.3'
 
@@ -16,7 +16,6 @@ config = {
     'author': 'Fritz Obermeyer',
     'author_email': 'fritz.obermeyer@gmail.com',
     'url': 'https://github.com/fritzo/parsable',
-    'packages': find_packages(),
     'py_modules': ['parsable'],
 }
 
