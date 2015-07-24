@@ -14,4 +14,4 @@ install:
 script:
   - pep8 *.py
   - pyflakes *.py
-  - nosetests -v
+  - nosetests --with-doctest -v

@@ -20,7 +20,7 @@ _bool_names = {'0': False, 'false': False, '1': True, 'true': True}
 _parsers = {
     bool: (lambda b: _bool_names[b.lower()]),
     None.__class__: str,
-    }
+}
 
 
 def _parser(d):
@@ -29,7 +29,16 @@ def _parser(d):
 
 
 def command(fun):
-    'Decorator for parsable _commands'
+    '''Decorator for parsable _commands.
+
+    Example:
+    >>> import parsable
+    >>> @parsable.command
+    ... def cat(*filenames):
+    ...     'Concatenate and print files'
+    ...     for f in filenames:
+    ...        print(open(f).read())
+    '''
 
     args, vargs, kwargs, defaults = inspect.getargspec(fun)
     if defaults is None:
@@ -60,7 +69,19 @@ def command(fun):
 
 
 def at_top(extra_depth=0):
-    'Returns whether calling location is top-level parsable command'
+    '''Returns whether calling location is top-level parsable command.
+
+    Example:
+    >>> import parsable
+    >>> @parsable.command
+    ... def subroutine(arg=0):
+    ...     'a subroutine'
+    ...     result = arg + arg
+    ...     if parsable.at_top():
+    ...         print(result)
+    ...     else:
+    ...         return result
+    '''
 
     depth = len(inspect.stack())
     assert depth >= 5
@@ -68,7 +89,12 @@ def at_top(extra_depth=0):
 
 
 def dispatch(args=None):
-    'Parses arguments to call a parsable command'
+    '''Parses arguments to call a parsable command.
+    Example:
+    >>> import parsable
+    >>> if __name__ == '__main__':
+    ...     parsable.dispatch()
+    '''
 
     if args is None:
         args = sys.argv[1:]
@@ -101,7 +127,12 @@ def dispatch(args=None):
 
 
 class Parsable:
-    'Collects parsable commands locally for optional dispatch'
+    '''Collects parsable commands locally for optional dispatch.
+
+    Example:
+    >>> import parsable
+    >>> parsable = parsable.Parsable()
+    '''
 
     def __init__(self):
         self._commands = []
