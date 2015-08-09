@@ -33,8 +33,8 @@ def command(fun):
     '''Decorator for parsable _commands.
 
     Example:
-    >>> import parsable
-    >>> @parsable.command
+    >>> from parsable import parsable
+    >>> @parsable
     ... def cat(*filenames):
     ...     'Concatenate and print files'
     ...     for f in filenames:
@@ -73,8 +73,8 @@ def at_top(extra_depth=0):
     '''Returns whether calling location is top-level parsable command.
 
     Example:
-    >>> import parsable
-    >>> @parsable.command
+    >>> from parsable import parsable
+    >>> @parsable
     ... def subroutine(arg=0):
     ...     'a subroutine'
     ...     result = arg + arg
@@ -92,7 +92,7 @@ def at_top(extra_depth=0):
 def dispatch(argv=None):
     '''Parses arguments to call a parsable command.
     Example:
-    >>> import parsable
+    >>> from parsable import parsable
     >>> if __name__ == '__main__':
     ...     parsable.dispatch()
     '''
@@ -161,7 +161,7 @@ class Parsable:
     '''Collects parsable commands locally for optional dispatch.
 
     Example:
-    >>> import parsable
+    >>> from parsable import parsable
     >>> parsable = parsable.Parsable()
     '''
 
@@ -180,7 +180,7 @@ class Parsable:
     def __call__(self, fun_or_argv=None):
         '''Abbreviation of both .command() and .dispatch().'''
         if callable(fun_or_argv):
-            self.command(fun_or_argv)
+            return self.command(fun_or_argv)
         else:
             self.dispatch(fun_or_argv)
 

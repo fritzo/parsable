@@ -38,7 +38,7 @@ and a ``parsable.dispatch`` function.
 
     .. code-block:: python
 
-        import parsable
+        from parsable import parsable
 
 2.  Decorate functions you want parsed.
     Parsable inspects the function to decide how to parse arguments.
@@ -48,7 +48,7 @@ and a ``parsable.dispatch`` function.
 
     .. code-block:: python  
 
-        @parsable.command
+        @parsable
         def my_function(required_arg, optional_bool=True, optional_int=1):
             '''Help messages are not just a good idea, they are required'''
             # parsable automatically converts types based on default arguments:
@@ -57,7 +57,7 @@ and a ``parsable.dispatch`` function.
             assert isinstance(optional_int, int)
             # ...
 
-        @parsable.command
+        @parsable
         def do_stuff_with_files(*filenames, inplace=True):
             '''This does something to each file'''
             # ...
@@ -67,7 +67,7 @@ and a ``parsable.dispatch`` function.
     .. code-block:: python  
 
         if __name__ == '__main__':
-            parsable.dispatch()
+            parsable()
 
 4.  Use your new script
 
