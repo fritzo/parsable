@@ -8,10 +8,11 @@ http://www.opensource.org/licenses/MIT
 http://www.opensource.org/licenses/GPL-2.0
 '''
 
+import inspect
 import os
+import re
 import sys
 import time
-import inspect
 
 _commands = []
 
@@ -88,7 +89,7 @@ def at_top(extra_depth=0):
     return depth == 5 + extra_depth
 
 
-def dispatch(args=None):
+def dispatch(argv=None):
     '''Parses arguments to call a parsable command.
     Example:
     >>> import parsable
@@ -96,14 +97,13 @@ def dispatch(args=None):
     ...     parsable.dispatch()
     '''
 
-    if args is None:
-        args = sys.argv[1:]
-        sys.stderr.write('# python %s\n' % ' '.join(sys.argv))
-    else:
-        sys.stderr.write('# (in %s) %s\n' % (sys.argv[0], ' '.join(args)))
+    if argv is None:
+        argv = sys.argv
+    args = argv[1:]
+    sys.stderr.write('# python {0}\n'.format(' '.join(argv)))
 
     if not args:
-        script = os.path.split(sys.argv[0])[-1]
+        script = os.path.split(argv[0])[-1]
         print('Usage: {0} COMMAND [ARG ARG ... KEY=VAL KEY=VAL ...]'.format(
             script))
         for name, (fun, _) in _commands:
@@ -126,6 +126,37 @@ def dispatch(args=None):
     parser(*args, **kwargs)
 
 
+def find_entry_points(package_name, package_dir=None, pattern=r'\bparsable\b'):
+    '''Finds parsable entry points during package setup.
+
+    Example in setup.py:
+        from setuptools import setup, find_packages
+        from parsable import find_entry_points
+        setup(
+            name='example_package',
+            packages=find_packages(),
+            entry_points=find_entry_points('example_package'))
+    '''
+
+    if package_dir is None:
+        package_dir = package_name
+    package_dir = os.path.normpath(os.path.abspath(package_dir))
+    points = []
+    for root, dirnames, filenames in os.walk(package_dir):
+        for filename in filenames:
+            if filename.endswith('.py'):
+                path = os.path.join(root, filename)
+                path = os.path.relpath(path, os.path.dirname(package_dir))
+                with open(path) as lines:
+                    if any(re.search(pattern, l) for l in lines):
+                        module = path[:-3].replace(os.sep, '.')
+                        name = module.replace('.__main__', '')
+                        points.append('{0} = {1}'.format(name, module))
+    assert points, 'no entry points found at {0}'.format(package_dir)
+    console_scripts = map('{0}:parsable.dispatch'.format, points)
+    return {'console_scripts': console_scripts}
+
+
 class Parsable:
     '''Collects parsable commands locally for optional dispatch.
 
@@ -141,37 +172,23 @@ class Parsable:
         self._commands.append(fun)
         return fun
 
-    def dispatch(self, args=None):
+    def dispatch(self, argv=None):
         for fun in self._commands:
             command(fun)
-        dispatch(args)
+        dispatch(argv)
+
+    def __call__(self, fun_or_argv=None):
+        '''Abbreviation of both .command() and .dispatch().'''
+        if callable(fun_or_argv):
+            self.command(fun_or_argv)
+        else:
+            self.dispatch(fun_or_argv)
+
+    at_top = staticmethod(at_top)
+    find_entry_points = staticmethod(find_entry_points)
 
 
-def find_entry_points(package_name, package_dir=None):
-    '''Finds parsable entry points during package setup.
+Parsable.Parsable = Parsable
 
-    Example in setup.py:
-        from setuptools import setup, find_packages
-        from parsable import find_entry_points
-        setup(
-            name='example_package',
-            packages=find_packages(),
-            entry_points=find_entry_points('example_package'))
-    '''
-    if package_dir is None:
-        package_dir = package_name
-    package_dir = os.path.normpath(os.path.abspath(package_dir))
-    points = []
-    for root, dirnames, filenames in os.walk(package_dir):
-        for filename in filenames:
-            if filename.endswith('.py'):
-                path = os.path.join(root, filename)
-                path = os.path.relpath(path, os.path.dirname(package_dir))
-                with open(path) as lines:
-                    if any(l.strip() == '@parsable.command' for l in lines):
-                        module = path[:-3].replace(os.sep, '.')
-                        name = module.replace('.__main__', '')
-                        points.append('{} = {}'.format(name, module))
-    assert points, 'no entry points found at {}'.format(package_dir)
-    console_scripts = map('{}:parsable.dispatch'.format, points)
-    return {'console_scripts': console_scripts}
+# To support callable module, use 'from parsable import parsable'
+parsable = Parsable()
