@@ -31,8 +31,8 @@ Or just download `parsable.py`_ and add to your project.
 Usage
 -----
 
-Parsable uses just two pieces of syntax: a ``@parsable.command`` decorator,
-and a ``parsable.dispatch`` function.
+Parsable uses just two pieces of syntax: a ``@parsable`` command decorator,
+and a ``parsable()`` dispatch function.
 
 1.  Import parsable.
 
