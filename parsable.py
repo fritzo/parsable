@@ -11,6 +11,7 @@ http://www.opensource.org/licenses/GPL-2.0
 import inspect
 import os
 import re
+import resource
 import sys
 import time
 
@@ -61,8 +62,10 @@ def command(fun):
         ])
         start = time.time()
         fun(*typed_args, **typed_kwargs)
-        stop = time.time()
-        sys.stderr.write('%s took %g sec\n' % (name, stop - start))
+        elapsed = time.time() - start
+        space = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        sys.stderr.write(
+                '%s took %g sec, used %dKB memory\n' % (name, elapsed, space))
 
     _commands.append((name, (fun, parser)))
 
