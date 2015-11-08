@@ -65,7 +65,7 @@ def command(fun):
         elapsed = time.time() - start
         space = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
         sys.stderr.write(
-                '%s took %g sec, used %dKB memory\n' % (name, elapsed, space))
+                '%s took %g sec, maxrss = %d\n' % (name, elapsed, space))
 
     _commands.append((name, (fun, parser)))
 
