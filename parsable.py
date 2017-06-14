@@ -15,6 +15,8 @@ import resource
 import sys
 import time
 
+VERBOSE = bool(os.environ.get('PARSABLE_VERBOSE'))
+
 _commands = []
 
 _bool_names = {'0': False, 'false': False, '1': True, 'true': True}
@@ -64,7 +66,8 @@ def command(fun):
         fun(*typed_args, **typed_kwargs)
         elapsed = time.time() - start
         space = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-        sys.stderr.write(
+        if VERBOSE:
+            sys.stderr.write(
                 '%s took %g sec, maxrss = %d\n' % (name, elapsed, space))
 
     _commands.append((name, (fun, parser)))
@@ -103,7 +106,8 @@ def dispatch(argv=None):
     if argv is None:
         argv = sys.argv
     args = argv[1:]
-    sys.stderr.write('# python {0}\n'.format(' '.join(argv)))
+    if VERBOSE:
+        sys.stderr.write('# python {0}\n'.format(' '.join(argv)))
 
     if not args:
         script = os.path.split(argv[0])[-1]
