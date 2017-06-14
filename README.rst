@@ -77,8 +77,28 @@ and a ``parsable()`` dispatch function.
         ...
 
         # parsable replaces - with _ to make functions easier to read
-        $ python my_script.py do-stuff-with-files *.py in-place=false
+        $ python my_script.py do-stuff-with-files *.py inplace=false
         ...
+
+Advanced Usage
+--------------
+
+To show verbose information (commmand name and timing info),
+set the environment variable ``PARSABLE_VERBOSE=true``.
+
+If you use parsable for many modules in a package, you can collect them in your
+``setup.py`` using ``parsable.find_entry_points()``.
+
+.. code-block:: python
+
+    from parsable import parsable
+    from setuptools import setup
+    
+    setup(
+        name='my_package',
+        entry_points=parsable.find_entry_points('my_package'),
+        ...
+    )
 
 LICENSE
 -------
