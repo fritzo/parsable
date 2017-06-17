@@ -160,7 +160,7 @@ def find_entry_points(package_name, package_dir=None, pattern=r'\bparsable\b'):
                         name = module.replace('.__main__', '')
                         points.append('{0} = {1}'.format(name, module))
     assert points, 'no entry points found at {0}'.format(package_dir)
-    console_scripts = map('{0}:parsable.dispatch'.format, points)
+    console_scripts = list(map('{0}:parsable.dispatch'.format, points))
     return {'console_scripts': console_scripts}
 
 
