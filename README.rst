@@ -8,6 +8,10 @@ Parsable
 .. image:: https://badge.fury.io/py/parsable.png
    :target: https://pypi.python.org/pypi/parsable
    :alt: PyPI Version
+   
+.. image:: https://anaconda.org/fritzo/parsable/badges/version.svg
+   :target: https://anaconda.org/fritzo/parsable
+   :alt: Anaconda Cloud Version
 
 Parsable is a lightweight decorator-based command line parser library.
 Parsable was written to be simpler than argparse, optparse, and argh.
