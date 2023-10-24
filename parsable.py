@@ -44,7 +44,13 @@ def command(fun):
     ...        print(open(f).read())
     '''
 
-    args, vargs, kwargs, defaults = inspect.getargspec(fun)
+    try:  # Python 2
+        args, vargs, kwargs, defaults = inspect.getargspec(fun)
+    except AttributeError:  # Python 3
+        spec = inspect.getfullargspec(fun)
+        args = spec.args
+        defaults = spec.varargs
+
     if defaults is None:
         defaults = ()
     arg_types = (
