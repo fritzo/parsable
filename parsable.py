@@ -161,7 +161,7 @@ def find_entry_points(package_name, package_dir=None, pattern=r'\bparsable\b'):
                 path = os.path.join(root, filename)
                 path = os.path.relpath(path, os.path.dirname(package_dir))
                 with open(path) as lines:
-                    if any(re.search(pattern, l) for l in lines):
+                    if any(re.search(pattern, line) for line in lines):
                         module = path[:-3].replace(os.sep, '.')
                         name = module.replace('.__main__', '')
                         points.append('{0} = {1}'.format(name, module))
