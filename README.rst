@@ -1,7 +1,7 @@
 Parsable
 ========
 
-.. image:: https://github.com/fritzo/parsable/workflows/CI/badge.svg
+.. image:: https://github.com/fritzo/parsable/workflows/Python%20CI/badge.svg
    :target: https://github.com/fritzo/parsable/actions
    :alt: Build status
 
