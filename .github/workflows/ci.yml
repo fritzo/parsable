@@ -28,9 +28,5 @@ jobs:
         pip install -r requirements-dev.txt
         python setup.py install
 
-    - name: Lint
-      run: flake8 *.py
-
     - name: Test
-      run: pytest -v
-
+      run: make test
