@@ -1,11 +1,11 @@
 Parsable
 ========
 
-.. image:: https://travis-ci.org/fritzo/parsable.png?branch=master
-   :target: https://travis-ci.org/fritzo/parsable
+.. image:: https://github.com/fritzo/parsable/workflows/CI/badge.svg
+   :target: https://github.com/fritzo/parsable/actions
    :alt: Build status
 
-.. image:: https://badge.fury.io/py/parsable.png
+.. image:: https://badge.fury.io/py/parsable.svg
    :target: https://pypi.python.org/pypi/parsable
    :alt: PyPI Version
    
