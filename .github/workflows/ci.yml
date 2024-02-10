@@ -1,0 +1,36 @@
+name: Python CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.8, 3.9, 3.10, 3.11, 3.12, 'pypy-3.8']
+        include:
+          - python-version: 'pypy-2.7'
+            python-key: 'pypy2'
+          - python-version: 'pypy-3.8'
+            python-key: 'pypy3'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements-dev.txt
+        python setup.py install
+
+    - name: Lint
+      run: flake8 *.py
+
+    - name: Test
+      run: pytest -v
+
