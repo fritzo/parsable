@@ -44,12 +44,12 @@ def command(fun):
     ...        print(open(f).read())
     '''
 
-    try:  # Python 2
-        args, vargs, kwargs, defaults = inspect.getargspec(fun)
-    except AttributeError:  # Python 3
+    try:  # Python 3
         spec = inspect.getfullargspec(fun)
         args = spec.args
-        defaults = spec.varargs
+        defaults = spec.defaults
+    except AttributeError:  # Python 2
+        args, vargs, kwargs, defaults = inspect.getargspec(fun)
 
     if defaults is None:
         defaults = ()
@@ -120,11 +120,11 @@ def dispatch(argv=None):
         print('Usage: {0} COMMAND [ARG ARG ... KEY=VAL KEY=VAL ...]'.format(
             script))
         for name, (fun, _) in _commands:
-            print('\n{0} {1}\n    {2}'.format(
-                name,
-                inspect.formatargspec(*inspect.getargspec(fun)),
-                fun.__doc__.strip(),
-            ))
+            try:  # Python 3
+                sig = inspect.signature(fun)
+            except AttributeError:  # Python 2
+                sig = inspect.formatargspec(*inspect.getargspec(fun))
+            print('\n{0} {1}\n    {2}'.format(name, sig, fun.__doc__.strip()))
         sys.exit(1)
 
     cmd, args, kwargs = args[0], args[1:], {}
