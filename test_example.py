@@ -14,7 +14,7 @@ def run(*args, **kwargs):
     subprocess.check_call(command)
 
 
-def test():
+def test_command():
     run('example_command', 'test1')
     run('example-command', 'test2')
     run('example-command', 'test3', 3)
@@ -23,3 +23,10 @@ def test():
     run('example-command', 'test6', optional_int=0)
     run('another-command')
     run('print-all-strings', *map(str, range(10)))
+
+
+def test_menu():
+    command = ['python', 'example.py']
+    proc = subprocess.Popen(command)
+    retcode = proc.wait()
+    assert retcode == 1
