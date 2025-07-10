@@ -1,6 +1,6 @@
 from setuptools import setup
 
-__version__ = '0.3.1'
+__version__ = '0.3.2'
 
 try:
     with open('README.rst') as f:
@@ -17,4 +17,6 @@ setup(
     author_email='fritz.obermeyer@gmail.com',
     url='https://github.com/fritzo/parsable',
     py_modules=['parsable'],
+    package_data={'': ['*.pyi']},
+    include_package_data=True,
 )

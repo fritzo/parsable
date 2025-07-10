@@ -2,7 +2,7 @@
 parsable - Lightweight argument parsing using a decorator.
 http://github.com/fritzo/parsable
 
-Copyright (c) 2011-2015, Fritz Obermeyer
+Copyright (c) 2011-2025, Fritz Obermeyer
 Dual licensed under the MIT or GPL Version 2 licenses.
 http://www.opensource.org/licenses/MIT
 http://www.opensource.org/licenses/GPL-2.0
@@ -44,12 +44,9 @@ def command(fun):
     ...        print(open(f).read())
     '''
 
-    try:  # Python 3
-        spec = inspect.getfullargspec(fun)
-        args = spec.args
-        defaults = spec.defaults
-    except AttributeError:  # Python 2
-        args, vargs, kwargs, defaults = inspect.getargspec(fun)
+    spec = inspect.getfullargspec(fun)
+    args = spec.args
+    defaults = spec.defaults
 
     if defaults is None:
         defaults = ()
@@ -120,10 +117,7 @@ def dispatch(argv=None):
         print('Usage: {0} COMMAND [ARG ARG ... KEY=VAL KEY=VAL ...]'.format(
             script))
         for name, (fun, _) in _commands:
-            try:  # Python 3
-                sig = inspect.signature(fun)
-            except AttributeError:  # Python 2
-                sig = inspect.formatargspec(*inspect.getargspec(fun))
+            sig = inspect.signature(fun)
             print('\n{0} {1}\n    {2}'.format(name, sig, fun.__doc__.strip()))
         sys.exit(1)
 
@@ -201,7 +195,7 @@ class Parsable:
     find_entry_points = staticmethod(find_entry_points)
 
 
-Parsable.Parsable = Parsable
+Parsable.Parsable = Parsable  # type: ignore[attr-defined]
 
 # To support callable module, use 'from parsable import parsable'
 parsable = Parsable()
