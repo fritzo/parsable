@@ -1,6 +1,6 @@
 from setuptools import setup
 
-__version__ = '0.3.3'
+__version__ = '0.3.4'
 
 try:
     with open('README.rst') as f:
