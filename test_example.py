@@ -8,8 +8,8 @@ def run(*args, **kwargs):
     for key, val in kwargs.items():
         val = str(val)
         if len(val.split()) > 1:
-            val = "'{0}'".format(val)
-        command.append("{0}={1}".format(key, val))
+            val = f"'{val}'"
+        command.append(f'{key}={val}')
     print(' '.join(command))
     subprocess.check_call(command)
 

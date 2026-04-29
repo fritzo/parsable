@@ -5,7 +5,7 @@ __version__ = '0.3.3'
 try:
     with open('README.rst') as f:
         long_description = f.read()
-except IOError:
+except OSError:
     long_description = 'Lightweight argument parsing using a decorator'
 
 setup(
@@ -17,4 +17,5 @@ setup(
     author_email='fritz.obermeyer@gmail.com',
     url='https://github.com/fritzo/parsable',
     py_modules=['parsable'],
+    python_requires='>=3.10',
 )

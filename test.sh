@@ -1,4 +1,6 @@
 #!/bin/sh
 
-flake8 *.py && \
+ruff check *.py && \
+ruff format --check *.py && \
+mypy parsable.py && \
 pytest --doctest-modules -v

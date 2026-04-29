@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-"""Example of using parsable"""
+'''Example of using parsable'''
+
+import sys
 
 from parsable import parsable
-import sys
 
 # This optional line creates a local parser
 # that won't leak into modules that import this module.
@@ -26,11 +27,11 @@ def another_command():
 @parsable
 def print_all_strings(*args):
     'Example of variable number of arguments'
-    print('len(args) = %i' % len(args))
+    print(f'len(args) = {len(args)}')
     print('args:')
     for arg in args:
         assert isinstance(arg, str)
-        print('  {0}'.format(arg))
+        print(f'  {arg}')
 
 
 global_value = True
@@ -46,7 +47,7 @@ def __set_value_to_false():
 @parsable
 def twice(*args):
     'Run a command twice'
-    argv = [sys.argv[0]] + list(args)
+    argv = [sys.argv[0], *list(args)]
 
     print('first time:')
     parsable(argv)
