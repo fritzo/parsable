@@ -28,9 +28,9 @@ Install from `PyPI`_ with ``pip``
     pip install parsable
 
 
-Or just download `parsable.py`_ and add to your project.
+Or just download `parsable/__init__.py`_ and add to your project.
 
-.. _`parsable.py`: https://raw.github.com/fritzo/parsable/master/parsable.py
+.. _`parsable/__init__.py`: https://raw.github.com/fritzo/parsable/master/parsable/__init__.py
 
 Usage
 -----

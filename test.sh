@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ruff check *.py && \
-ruff format --check *.py && \
-mypy parsable.py && \
+ruff check parsable/__init__.py *.py && \
+ruff format --check parsable/__init__.py *.py && \
+mypy parsable && \
 pytest --doctest-modules -v
