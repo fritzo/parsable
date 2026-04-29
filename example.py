@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""Example of using parsable"""
 
 from parsable import parsable
 import sys
@@ -55,4 +56,4 @@ def twice(*args):
 
 
 if __name__ == '__main__':
-    parsable()
+    parsable(doc=__doc__)

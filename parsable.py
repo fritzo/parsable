@@ -98,12 +98,12 @@ def at_top(extra_depth=0):
     return depth == 5 + extra_depth
 
 
-def dispatch(argv=None):
+def dispatch(argv=None, doc=None):
     '''Parses arguments to call a parsable command.
     Example:
     >>> from parsable import parsable
     >>> if __name__ == '__main__':
-    ...     parsable.dispatch()
+    ...     parsable.dispatch(doc=__doc__)
     '''
 
     if argv is None:
@@ -116,6 +116,9 @@ def dispatch(argv=None):
         script = os.path.split(argv[0])[-1]
         print('Usage: {0} COMMAND [ARG ARG ... KEY=VAL KEY=VAL ...]'.format(
             script))
+        if doc:
+            print()
+            print(doc.strip())
         for name, (fun, _) in _commands:
             sig = inspect.signature(fun)
             print('\n{0} {1}\n    {2}'.format(name, sig, fun.__doc__.strip()))
@@ -179,17 +182,16 @@ class Parsable:
         self._commands.append(fun)
         return fun
 
-    def dispatch(self, argv=None):
+    def dispatch(self, argv=None, doc=None):
         for fun in self._commands:
             command(fun)
-        dispatch(argv)
+        dispatch(argv, doc)
 
-    def __call__(self, fun_or_argv=None):
+    def __call__(self, fun_or_argv=None, doc=None):
         '''Abbreviation of both .command() and .dispatch().'''
         if callable(fun_or_argv):
             return self.command(fun_or_argv)
-        else:
-            self.dispatch(fun_or_argv)
+        self.dispatch(fun_or_argv, doc)
 
     at_top = staticmethod(at_top)
     find_entry_points = staticmethod(find_entry_points)

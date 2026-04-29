@@ -6,13 +6,7 @@ To use these type hints, ensure this .pyi file is in the same directory
 as parsable.py or in your Python path.
 """
 
-import sys
-from typing import Any, Callable, Dict, List, Optional, ParamSpec, Tuple, TypeVar, Union, overload
-
-if sys.version_info >= (3, 8):
-    from typing import Protocol
-else:
-    from typing_extensions import Protocol
+from typing import Any, Callable, Dict, List, Optional, ParamSpec, Tuple, TypeVar, overload
 
 __all__ = ['command', 'dispatch', 'at_top', 'find_entry_points', 'Parsable', 'parsable']
 
@@ -56,13 +50,13 @@ def at_top(extra_depth: int = 0) -> bool:
     """
     ...
 
-def dispatch(argv: Optional[List[str]] = None) -> None:
+def dispatch(argv: Optional[List[str]] = None, *, doc: Optional[str] = None) -> None:
     """Parses arguments to call a parsable command.
-    
+
     Example:
     >>> from parsable import parsable
     >>> if __name__ == '__main__':
-    ...     parsable.dispatch()
+    ...     parsable.dispatch(doc=__doc__)
     """
     ...
 
@@ -97,13 +91,13 @@ class Parsable:
     
     def command(self, /, fun: Callable[_A, _B]) -> Callable[_A, _B]: ...
     
-    def dispatch(self, /, argv: Optional[List[str]] = None) -> None: ...
-    
+    def dispatch(self, /, argv: Optional[List[str]] = None, *, doc: Optional[str] = None) -> None: ...
+
     @overload
     def __call__(self, /, fun: Callable[_A, _B]) -> Callable[_A, _B]: ...
-    
+
     @overload
-    def __call__(self, /, argv: List[str]) -> None: ...
+    def __call__(self, /, argv: Optional[List[str]] = None, *, doc: Optional[str] = None) -> None: ...
     
     # Static method references
     at_top: Callable[[int], bool]
