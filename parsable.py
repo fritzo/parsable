@@ -8,31 +8,39 @@ http://www.opensource.org/licenses/MIT
 http://www.opensource.org/licenses/GPL-2.0
 '''
 
+from __future__ import annotations
+
 import inspect
 import os
 import re
 import resource
 import sys
 import time
+from typing import TYPE_CHECKING, overload
 
-VERBOSE = bool(os.environ.get('PARSABLE_VERBOSE'))
+if TYPE_CHECKING:
+    from typing import Any, Callable, ParamSpec, TypeVar
+    _A = ParamSpec('_A')
+    _B = TypeVar('_B')
 
-_commands = []
+VERBOSE: bool = bool(os.environ.get('PARSABLE_VERBOSE'))
 
-_bool_names = {'0': False, 'false': False, '1': True, 'true': True}
+_commands: list[tuple[str, tuple[Callable[..., Any], Callable[..., None]]]] = []
 
-_parsers = {
+_bool_names: dict[str, bool] = {'0': False, 'false': False, '1': True, 'true': True}
+
+_parsers: dict[type, Callable[[str], Any]] = {
     bool: (lambda b: _bool_names[b.lower()]),
     None.__class__: str,
 }
 
 
-def _parser(d):
+def _parser(d: Any) -> Callable[[str], Any]:
     class_ = d.__class__
     return _parsers.get(class_, class_)
 
 
-def command(fun):
+def command(fun: Callable[_A, _B]) -> Callable[_A, _B]:
     '''Decorator for parsable _commands.
 
     Example:
@@ -78,7 +86,7 @@ def command(fun):
     return fun
 
 
-def at_top(extra_depth=0):
+def at_top(extra_depth: int = 0) -> bool:
     '''Returns whether calling location is top-level parsable command.
 
     Example:
@@ -98,7 +106,7 @@ def at_top(extra_depth=0):
     return depth == 5 + extra_depth
 
 
-def dispatch(argv=None, doc=None):
+def dispatch(argv: list[str] | None = None, doc: str | None = None) -> None:
     '''Parses arguments to call a parsable command.
     Example:
     >>> from parsable import parsable
@@ -136,7 +144,11 @@ def dispatch(argv=None, doc=None):
     parser(*args, **kwargs)
 
 
-def find_entry_points(package_name, package_dir=None, pattern=r'\bparsable\b'):
+def find_entry_points(
+    package_name: str,
+    package_dir: str | None = None,
+    pattern: str = r'\bparsable\b',
+) -> dict[str, list[str]]:
     '''Finds parsable entry points during package setup.
 
     Example in setup.py:
@@ -175,18 +187,25 @@ class Parsable:
     >>> parsable = parsable.Parsable()
     '''
 
-    def __init__(self):
+    Parsable: type[Parsable]
+    _commands: list[Callable[..., Any]]
+
+    def __init__(self) -> None:
         self._commands = []
 
-    def command(self, fun):
+    def command(self, fun: Callable[_A, _B]) -> Callable[_A, _B]:
         self._commands.append(fun)
         return fun
 
-    def dispatch(self, argv=None, doc=None):
+    def dispatch(self, argv: list[str] | None = None, doc: str | None = None) -> None:
         for fun in self._commands:
             command(fun)
         dispatch(argv, doc)
 
+    @overload
+    def __call__(self, fun_or_argv: Callable[_A, _B]) -> Callable[_A, _B]: ...
+    @overload
+    def __call__(self, fun_or_argv: list[str] | None = None, doc: str | None = None) -> None: ...
     def __call__(self, fun_or_argv=None, doc=None):
         '''Abbreviation of both .command() and .dispatch().'''
         if callable(fun_or_argv):
@@ -197,7 +216,7 @@ class Parsable:
     find_entry_points = staticmethod(find_entry_points)
 
 
-Parsable.Parsable = Parsable  # type: ignore[attr-defined]
+Parsable.Parsable = Parsable
 
 # To support callable module, use 'from parsable import parsable'
 parsable = Parsable()

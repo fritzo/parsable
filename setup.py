@@ -17,6 +17,4 @@ setup(
     author_email='fritz.obermeyer@gmail.com',
     url='https://github.com/fritzo/parsable',
     py_modules=['parsable'],
-    data_files=[('', ['parsable.pyi'])],
-    include_package_data=True,
 )
